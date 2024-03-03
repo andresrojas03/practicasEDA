@@ -4,25 +4,7 @@
 //casillas con serpiente (25->6, 46->12, 74->52, 88->76)
 //crear una funcion tirardado() que elija un numero entre el 1 y el 6
 
-/*
-imprimir el tablero
-    for(x=0;x<10;x++){
-        printf("\n[");
-        for(y=0;y<10;y++){
-            printf("|%d|",tablero[x][y]);
-        }
-        printf("]");
-    }
-    printf("\n");
-variables de control juego
-dado = tirardado();
-            printf("---->Tu tirada fue: %d<----", dado);
-            player(q,dado, &posicionJugador);
-            escalera(q,&posicionJugador);
-            serpiente(q,&posicionJugador);
-            estrella(q,&posicionJugador);
 
-*/
 
 
 #include <stdio.h>
