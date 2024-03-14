@@ -1,8 +1,8 @@
-from ColaD import CircularQ
+from CircularQ import circularq
 
 def main():
     #size = 5
-    p = CircularQ(5)
+    p = circularq(5)
 
     p.enqueue(4)
     p.enqueue(5)
