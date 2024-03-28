@@ -1,0 +1,25 @@
+Sea Q una cola doble vacia 
+Sea C un arreglo de clientes
+Sea llenar_cola una funcion para llenar Q
+Sea documentos una funcion para atender a los clientes con los documentos completos
+
+Leer C
+
+llenar_cola(C)
+    Para i = 0 hasta len(C) i ++
+        add_rear(Q, C[i])
+    fin 
+fin 
+
+documentos(Q)
+    Sea tiene_documentos una funcion booleana
+    Si tiene_documentos entonces
+        remove_rear()
+    En caso contrario
+        Sea no_docs = remove_rear()
+        add_front(Q, no_docs)
+    fin
+fin 
+
+Mientras no isEmpty:
+    remove_rear()

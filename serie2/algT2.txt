@@ -1,0 +1,26 @@
+Sea S una pila vacia
+Sea C una cadena
+Sea Palindromo una funcion que regresa un booleano
+
+Leer C 
+Palindromo(C)
+    Desde i = len(C) hasta i = 0 i--
+        si(C[i] >= y C[i]<= 9) ó (C[i] >= "a" y C[i] <= "Z")
+            Sea comprobar = C[i]
+            Si comprobar != C[LS] entonces:
+                return False
+            En caso contrario
+                push(S, C[i])
+                push(S, C[LS])
+                LS--
+            fin 
+        fin 
+    fin 
+    return True
+
+Si Palindromo(C) entonces
+    mostrar "La palabra es palindromo"
+    return 0
+En caso contrario
+    mostrar "No es palindromo"
+    return 0
