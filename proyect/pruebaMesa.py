@@ -7,6 +7,8 @@ COLOR_BLUE = '\033[94m'
 COLOR_WHITE = '\033[97m'
 COLOR_RESET = '\033[0m'
 fichas_jugador = 14
+nJugadores = 2
+
 
 class fichas():
     #crear mazos de los distintos colores y los comodines 
@@ -20,32 +22,32 @@ class fichas():
         self.color = color
         # self.deck = [] #el mazo de todas las piezas que se va a llenar despues de haber mezclado las fichas
 
-    def llenar_deck(self):
-        return self.deck
+    # def llenar_deck(self):
+    #     return self.deck
     
-    def agregar_ficha(self, ficha):
-        self.deck.append(ficha)
+    # def agregar_ficha(self, ficha):
+    #     self.deck.append(ficha)
     
-    def mostrar_deck(self):
-        for ficha in self.deck:
-            print(f"Ficha: {ficha.numero} de color {ficha.color}")
+    # def mostrar_deck(self):
+    #     for ficha in self.deck:
+    #         print(f"Ficha: {ficha.numero} de color {ficha.color}")
 
-    def mostrar_deck(self):
-        print("Mazo de fichas:")
-        for ficha in self.deck:
-            color = COLOR_RESET
-            if ficha.color == "amarillo":
-                color = COLOR_YELLOW
-            elif ficha.color == "azul":
-                color = COLOR_BLUE
-            elif ficha.color == "rojo":
-                color = COLOR_RED
-            elif ficha.color == "verde":
-                color = COLOR_GREEN
-            elif ficha.color == "comodin":
-                color = COLOR_WHITE
-            print('[' + color + f"{ficha.numero}" + COLOR_RESET + ']', end=' ')
-        print()
+    # def mostrar_deck(self):
+    #     print("Mazo de fichas:")
+    #     for ficha in self.deck:
+    #         color = COLOR_RESET
+    #         if ficha.color == "amarillo":
+    #             color = COLOR_YELLOW
+    #         elif ficha.color == "azul":
+    #             color = COLOR_BLUE
+    #         elif ficha.color == "rojo":
+    #             color = COLOR_RED
+    #         elif ficha.color == "verde":
+    #             color = COLOR_GREEN
+    #         elif ficha.color == "comodin":
+    #             color = COLOR_WHITE
+    #         print('[' + color + f"{ficha.numero}" + COLOR_RESET + ']', end=' ')
+    #     print()
 
     
 class jugador():
@@ -53,7 +55,7 @@ class jugador():
     def __init__(self, nombre):
         self.nombre = nombre
         self.mano = []
-        self.jugada = []
+        self.jugadas = []
 
     def llenar_mano(self):
         return self.mano
@@ -72,16 +74,51 @@ class jugador():
             elif ficha.color == "comodin":
                 color = COLOR_WHITE
             print('[' + color + f"{ficha.numero}" + COLOR_RESET + ']', end='')
+
+    def mostrar_jugadas(self, fichas):
+        #para mostrar las jugadas que tiene el jugador 
+        #usar esta funcion en la clase mesa para mostrar las jugadas de todos los players
+        print("Tu(s) jugadas:")
+        for ficha in fichas:
+            color = COLOR_RESET
+            if ficha.color == "amarillo":
+                color = COLOR_YELLOW
+            elif ficha.color == "azul":
+                color = COLOR_BLUE
+            elif ficha.color == "rojo":
+                color = COLOR_RED
+            elif ficha.color == "verde":
+                color = COLOR_GREEN
+            elif ficha.color == "comodin":
+                color = COLOR_WHITE
+
+            print('[' + color + f"{ficha.numero}" + COLOR_RESET + ']', end='')
+        print()
         
     def comer(self, ficha):
-        self.mano.append(ficha)
+        print(f"Has agarrado la ficha {ficha[-1].numero} de color {ficha[-1].color}")
+        print(f"Quedan: {len(ficha)} fichas en el pozo")
+        self.mano.append(ficha.pop())
     
-    def armar_jugada(self):
+    def armar_jugada(self, pozo):
+        tomar = True
+        #bucle por si el jugador necesita tomar mas de una ficha
+        while tomar:
+            print("Tu mano:")
+            self.mostrar_mano(self.mano)
+            print()
+            take = int(input("Desea agarrar una ficha? 1.Si 2.No"))
+            if take == 1:
+                self.comer(pozo)
+            elif take == 2:
+                break
+
         print("Seleccione al menos 3 fichas de su mano de juego:")
         jugada = []
         
         while len(jugada) < 3 or len(jugada)< 14:
             # Solicitar al jugador que ingrese el índice de la ficha
+            print("Tu mano:")
             self.mostrar_mano(self.mano)
             print()
             while True:
@@ -95,7 +132,6 @@ class jugador():
                     print("Entrada no válida. Inténtelo de nuevo.")
             
             # Obtener la ficha seleccionada por el jugador y agregarla a la lista de fichas seleccionadas
-
             ficha_seleccionada = self.mano.pop(indice)
             jugada.append(ficha_seleccionada)
             print(f"Ha seleccionado la ficha [{ficha_seleccionada.color} {ficha_seleccionada.numero}]")
@@ -106,7 +142,6 @@ class jugador():
                 elif comprobacion == "2":
                     return jugada
         
-    
     def validar_jugada(self, jugada):
         if len(jugada) < 3:
             print("Jugada inválida: Se requieren al menos 3 fichas.")
@@ -114,28 +149,60 @@ class jugador():
         
         # Comprobación de secuencia ascendente
         if all(jugada[i].numero == jugada[i+1].numero - 1 and jugada[i].color == jugada[i+1].color for i in range(len(jugada) - 1)):
+            while jugada:
+                ag_jugada = jugada.pop()
+                self.jugadas.append(ag_jugada)
+            self.mostrar_jugadas(self.jugadas)
             return True
         
         # Comprobación de secuencia descendente
         if all(jugada[i].numero == jugada[i+1].numero + 1 and jugada[i].color == jugada[i+1].color for i in range(len(jugada) - 1)):
+            while jugada:
+                ag_jugada = jugada.pop()
+                self.jugadas.append(ag_jugada)
+            self.mostrar_jugadas(self.jugadas)
             return True
         
         # Comprobación de grupo de colores diferentes con el mismo número
         if all(jugada[i].numero == jugada[i+1].numero and jugada[i].color != jugada[i+1].color for i in range(len(jugada) - 1)):
+            while jugada:
+                ag_jugada = jugada.pop()
+                self.jugadas.append(ag_jugada)
+            self.mostrar_jugadas(self.jugadas)
             return True
         
         # Comprobación de grupo de números diferentes con el mismo color
         if all(jugada[i].color == jugada[i+1].color and jugada[i].numero != jugada[i+1].numero for i in range(len(jugada) - 1)):
+            #bucle para vaciar el arreglo "jugada" dentro del arreglo de jugadas del player
+            while jugada:
+                ag_jugada = jugada.pop()
+                self.jugadas.append(ag_jugada)
+            self.mostrar_jugadas(self.jugadas)
             return True
         
         print("Jugada inválida: Las fichas no forman una secuencia o grupo válido.")
+        print("Regresando fichas a su mano")
+        while jugada:
+            reg = jugada.pop()
+            self.mano.append(reg)
         return False
 
-            
+    def ganar(self):
+        if len(self.mano) != 0:
+            return False
+        elif len(self.mano) == 0:
+            print("El jugador ha ganado")
+            return True     
+     
 class mesa():
     def __init__(self, jugadores):
-        self.jugadores = jugadores #un arreglo con los jugadores en la mesa
+        self.jugadores = jugadores#un arreglo con los jugadores en la mesa
         # self.jugadas = jugadas #arreglo con las jugadas de cada jugador
+    def mostrar_jugadores(self):
+        print("Jugadores activos en la mesa:")
+        for jugador in self.jugadores:
+            print(f"{jugador.nombre} ", end='')
+        print()
     
 def crear_fichas():
     print("Creando las fichas...")
@@ -169,7 +236,7 @@ def mezclar_fichas(n,jugadores):
     random.shuffle(pozo)
     
     #para llenar el arreglo del jugador con sus fichas
-    for j in range(len(jugadores)):
+    for j in range(n):
         mano_jugador = jugadores[j].llenar_mano() #llamando el arreglo del jugador
         for i in range(fichas_jugador):
             ficha = pozo.pop()
@@ -180,22 +247,28 @@ def mezclar_fichas(n,jugadores):
        
 def main():
     crear_fichas()
-    jugadores = crear_jugadores(2)
+    
+    jugadores = crear_jugadores(nJugadores)
     
     # Llenar el deck con la función mezclar_fichas()
-    pozo = mezclar_fichas(2, jugadores)
+    pozo = mezclar_fichas(nJugadores, jugadores)
     
+    table= mesa(jugadores)
 
+    
 
     print(f"En el pozo hay: {len(pozo)} fichas")
-
-    #pruebas con el jugador 1
-    play = jugadores[0].armar_jugada()
-    jugadores[0].validar_jugada(play)
+    #mostrar el contenido hasta que el jugador gane
+    while not jugadores[0].ganar():
+        table.mostrar_jugadores()
+        #pruebas con el jugador 1
+        play = jugadores[0].armar_jugada(pozo)
+        jugadores[0].validar_jugada(play)
+    
 
     
     
-    jugadores[0].mostrar_mano(jugadores[0].mano)
+    #jugadores[0].mostrar_mano(jugadores[0].mano)
     # for i in range(3):
     #     jugadores[0].mano.pop()
 
