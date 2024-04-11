@@ -8,6 +8,8 @@ int i = 0;
 // Node for Doubly Linked List
 typedef struct node {
     int key;
+	int i;
+	int j;
     struct node* prev;
     struct node* next;
  
@@ -21,17 +23,17 @@ node* tail = NULL;
  
 // Function to add a node in the
 // Doubly Linked List
-void addnode(int k)
+void addnode(int i, int j, int k)
 {
  
     // Allocating memory
     // to the Node ptr
-    node* ptr
-        = (node*)malloc(sizeof(node));
+    node* ptr= (node*)malloc(sizeof(node));
  
     // Assign Key to value k
     ptr->key = k;
- 
+	ptr->i = i;
+	ptr->j = j;
     // Next and prev pointer to NULL
     ptr->next = NULL;
     ptr->prev = NULL;
@@ -71,7 +73,7 @@ void traverse()
     while (ptr != NULL) {
 		
         // Print key of the node
-        printf("%d ", ptr->key);
+        printf(" (%d, %d) %d | ", ptr->i, ptr->j, ptr->key);
         ptr = ptr->next;
     }
 	printf("]");
