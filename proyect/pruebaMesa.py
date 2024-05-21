@@ -20,38 +20,9 @@ class fichas():
     def __init__(self, numero, color):
         self.numero = numero
         self.color = color
-        # self.deck = [] #el mazo de todas las piezas que se va a llenar despues de haber mezclado las fichas
-
-    # def llenar_deck(self):
-    #     return self.deck
-    
-    # def agregar_ficha(self, ficha):
-    #     self.deck.append(ficha)
-    
-    # def mostrar_deck(self):
-    #     for ficha in self.deck:
-    #         print(f"Ficha: {ficha.numero} de color {ficha.color}")
-
-    # def mostrar_deck(self):
-    #     print("Mazo de fichas:")
-    #     for ficha in self.deck:
-    #         color = COLOR_RESET
-    #         if ficha.color == "amarillo":
-    #             color = COLOR_YELLOW
-    #         elif ficha.color == "azul":
-    #             color = COLOR_BLUE
-    #         elif ficha.color == "rojo":
-    #             color = COLOR_RED
-    #         elif ficha.color == "verde":
-    #             color = COLOR_GREEN
-    #         elif ficha.color == "comodin":
-    #             color = COLOR_WHITE
-    #         print('[' + color + f"{ficha.numero}" + COLOR_RESET + ']', end=' ')
-    #     print()
 
     
 class jugador():
-
     def __init__(self, nombre):
         self.nombre = nombre
         self.mano = []
@@ -100,92 +71,75 @@ class jugador():
         print(f"Quedan: {len(ficha)} fichas en el pozo")
         self.mano.append(ficha.pop())
     
-    def armar_jugada(self, pozo):
-        tomar = True
-        #bucle por si el jugador necesita tomar mas de una ficha
-        while tomar:
-            print("Tu mano:")
-            self.mostrar_mano(self.mano)
-            print()
-            take = int(input("Desea agarrar una ficha? 1.Si 2.No"))
-            if take == 1:
-                self.comer(pozo)
-            elif take == 2:
-                break
-
-        print("Seleccione al menos 3 fichas de su mano de juego:")
+    def armar_jugada(self, pozo): 
         jugada = []
-        
-        while len(jugada) < 3 or len(jugada)< 14:
-            # Solicitar al jugador que ingrese el índice de la ficha
-            print("Tu mano:")
-            self.mostrar_mano(self.mano)
-            print()
-            while True:
-                try:
-                    indice = int(input("Ingrese el índice de la ficha: ")) - 1  # Restar 1 para ajustar al índice base 0
-                    if 0 <= indice < len(self.mano):
-                        break
-                    else:
-                        print("Índice fuera de rango. Inténtelo de nuevo.")
-                except ValueError:
-                    print("Entrada no válida. Inténtelo de nuevo.")
-            
-            # Obtener la ficha seleccionada por el jugador y agregarla a la lista de fichas seleccionadas
-            ficha_seleccionada = self.mano.pop(indice)
-            jugada.append(ficha_seleccionada)
-            print(f"Ha seleccionado la ficha [{ficha_seleccionada.color} {ficha_seleccionada.numero}]")
-            if len(jugada) >= 3:
-                comprobacion = input("Deseas agregar mas fichas a tu jugada? 1.Si 2.No")
-                if comprobacion == "1":
-                    pass
-                elif comprobacion == "2":
-                    return jugada
+        print("Tu mano:")
+        self.mostrar_mano(self.mano)
+        print()
+        nueva_jugada = 3
+        while len(jugada)< 14:
+            turno = int(input("Que desea hacer? 1.Hacer jugada 2.Comer 3. Terminar turno "))
+            if turno == 1:
+                print(f"Tamanio de la jugada: {len(jugada)}")
+                print(f"Tamanio de la nueva jugada: {nueva_jugada}")
+                while len(jugada) < nueva_jugada or len(jugada) < (nueva_jugada+1):
+                    while True:
+                        try:
+                            indice = int(input("Ingrese el índice de la ficha: ")) - 1  # Restar 1 para ajustar al índice base 0
+                            if 0 <= indice < len(self.mano):
+                                break
+                            else:
+                                print("Índice fuera de rango. Inténtelo de nuevo.")
+                        except ValueError:
+                            print("Entrada no válida. Inténtelo de nuevo.")
+                    ficha_seleccionada = self.mano.pop(indice)
+                    jugada.append(ficha_seleccionada)
+                    self.mostrar_jugadas(jugada)
+                    self.mostrar_mano(self.mano)
+                    print()
+                    if(len(jugada) == 3):
+                        termino = int(input(("Agregar otra ficha? 1.Si 2.No")))
+                        if termino == 1:
+                            pass
+                        elif termino == 2:
+                            break
+                nueva_jugada = nueva_jugada + 3 
+                
+            elif turno == 2:
+                self.comer(pozo)
+                return
+            elif turno == 3:
+                self.validar_jugada(jugada)
+                return 
         
     def validar_jugada(self, jugada):
-        if len(jugada) < 3:
-            print("Jugada inválida: Se requieren al menos 3 fichas.")
-            return False
-        
-        # Comprobación de secuencia ascendente
-        if all(jugada[i].numero == jugada[i+1].numero - 1 and jugada[i].color == jugada[i+1].color for i in range(len(jugada) - 1)):
-            while jugada:
-                ag_jugada = jugada.pop()
-                self.jugadas.append(ag_jugada)
-            self.mostrar_jugadas(self.jugadas)
-            return True
-        
-        # Comprobación de secuencia descendente
-        if all(jugada[i].numero == jugada[i+1].numero + 1 and jugada[i].color == jugada[i+1].color for i in range(len(jugada) - 1)):
-            while jugada:
-                ag_jugada = jugada.pop()
-                self.jugadas.append(ag_jugada)
-            self.mostrar_jugadas(self.jugadas)
-            return True
-        
-        # Comprobación de grupo de colores diferentes con el mismo número
-        if all(jugada[i].numero == jugada[i+1].numero and jugada[i].color != jugada[i+1].color for i in range(len(jugada) - 1)):
-            while jugada:
-                ag_jugada = jugada.pop()
-                self.jugadas.append(ag_jugada)
-            self.mostrar_jugadas(self.jugadas)
-            return True
-        
-        # Comprobación de grupo de números diferentes con el mismo color
-        if all(jugada[i].color == jugada[i+1].color and jugada[i].numero != jugada[i+1].numero for i in range(len(jugada) - 1)):
-            #bucle para vaciar el arreglo "jugada" dentro del arreglo de jugadas del player
-            while jugada:
-                ag_jugada = jugada.pop()
-                self.jugadas.append(ag_jugada)
-            self.mostrar_jugadas(self.jugadas)
-            return True
-        
-        print("Jugada inválida: Las fichas no forman una secuencia o grupo válido.")
-        print("Regresando fichas a su mano")
-        while jugada:
-            reg = jugada.pop()
-            self.mano.append(reg)
-        return False
+        suma = 0
+        valida = True
+        for i in range(len(jugada)):
+            #determinar el valor del comodin
+            if jugada[i].numero == "*":
+                if jugada[i+1].numero == 13:
+                    suma += (jugada[i+1].numero)
+                else:
+                    suma += (jugada[i+1].numero + 1)
+            else:
+                suma += jugada[i].numero
+
+
+        print(suma)
+        # if suma < 25:
+        #     print("Jugada invalida, necesitas 25 puntos para poder jugar")
+        #     valida = False
+        # else:
+        #     print(f"Jugada de {suma} puntos")
+
+        # if not valida:
+        #     reg = jugada.pop()
+        #     self.mano.append(reg)
+        #     return False
+        # else:
+        #     return True
+
 
     def ganar(self):
         if len(self.mano) != 0:
@@ -203,6 +157,12 @@ class mesa():
         for jugador in self.jugadores:
             print(f"{jugador.nombre} ", end='')
         print()
+
+    def turnos(self, orden):
+        print(f"inicia el jugador {self.jugadores[orden-1].nombre}")
+        if orden == 1: #inicia el jugador de consola
+            return True
+            
     
 def crear_fichas():
     print("Creando las fichas...")
@@ -253,31 +213,22 @@ def main():
     # Llenar el deck con la función mezclar_fichas()
     pozo = mezclar_fichas(nJugadores, jugadores)
     
-    table= mesa(jugadores)
+    orden = random.randint(1, nJugadores)
 
+    table= mesa(jugadores)
+    inicio = table.turnos(orden)
     
 
     print(f"En el pozo hay: {len(pozo)} fichas")
     #mostrar el contenido hasta que el jugador gane
     while not jugadores[0].ganar():
         table.mostrar_jugadores()
+        
         #pruebas con el jugador 1
         play = jugadores[0].armar_jugada(pozo)
-        jugadores[0].validar_jugada(play)
-    
-
-    
-    
-    #jugadores[0].mostrar_mano(jugadores[0].mano)
-    # for i in range(3):
-    #     jugadores[0].mano.pop()
-
-
-
-
-    # print("El jugador1 va a comer")
-    # jugadores[0].comer(pozo.pop())
-    # jugadores[0].mostrar_mano(jugadores[0].mano)
+        print(f"Ha terminado el turno del {jugadores[0].nombre}")
+        exit(-1)
+        
     
     
 

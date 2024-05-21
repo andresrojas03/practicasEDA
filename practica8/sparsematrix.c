@@ -10,12 +10,12 @@
 void showMatrix(int matrix[][REN]);
 void addnode(int i, int j, int k);
 void traverse();
-void insertatbegin(int k);
+/* void insertatbegin(int k);
 void insertatend(int k);
 void insertatpos(int k, int pos);
 void delatbegin();
 void delatend();
-void delatpos(int pos);
+void delatpos(int pos); */
 
 int main(){
 	int matrix [COL][REN] = {{6,0,0,0}, {0,2,0,0}, {0,0,10,0}, {0,2,0,0}, {7,0,0,0}};
