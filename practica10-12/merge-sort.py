@@ -60,8 +60,6 @@ def plot_time(sizes, times, theoretical_times):
     plt.scatter(sizes, times, color = 'b', label = 'Execution time')
     plt.plot(sizes, theoretical_times, marker='', linestyle='-', color = 'r', label = 'theoric curve $n \\log n$')
 
-    
-
     plt.xlabel('Array size')
     plt.ylabel('Execution time (seconds)')
     plt.title('Execution time Merge-Sort')
